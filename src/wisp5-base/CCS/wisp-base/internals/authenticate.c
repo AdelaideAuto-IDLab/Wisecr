@@ -60,6 +60,7 @@ static uint16_t* ATT_BASE = (uint16_t*)0x10000; //[size]
 static uint16_t* ATT_OFFSET = (uint8_t*)(0x10000); //[2B]
 static uint16_t* ATT_LENGTH = (uint16_t*)(0x10000+2);//[2B]
 static uint8_t* ATT_CHALLENGE = (uint8_t*)(0x10000+2+2);//[16B]
+static uint8_t* ATT_XKEY = (uint8_t*)(0x10000+2+2+16);//[16B]
 
 extern uint8_t usrBank[USRBANK_SIZE];
 
@@ -250,16 +251,22 @@ void blockWriteControlMessage(void) {
         *receivedWords = 0;
         prevDecryptOffset = 0;
         attMode = RWData.controlMessage == 0 ? fast : elaborate;
+
         break;
 
     case GET_ATTESTATION_RESPONSE:
+
+        AES_init_ctx_iv(&ctx,_Device_Key,IV); // Initialization, put the key and the Initial Vector
+        AES256_setDecipherKey(AES256_BASE, _Device_Key, AES256_KEYLENGTH_128BIT);
+        AES_CBC_decrypt(&ctx, ATT_XKEY, SesKey); // decrypt and store the session key
+
         veri = *((volatile uint8_t *)&_Device_Version);
 
         id[0] = ((uint8_t *)(INFO_WISP_TAGID))[0];
         id[1] = ((uint8_t *)(INFO_WISP_TAGID))[1];
         firm_len = (((unsigned short)(*ATT_LENGTH) >> 8) | ((unsigned short)(*ATT_LENGTH) << 8));
         firm_addr = (((unsigned short)(*ATT_OFFSET) >> 8) | ((unsigned short)(*ATT_OFFSET) << 8));
-        doTINA(usrBank, _Device_Key, ATT_CHALLENGE, (uint8_t*)firm_addr, firm_len, id, &veri, attMode);
+        doTINA(usrBank, SesKey, ATT_CHALLENGE, (uint8_t*)firm_addr, firm_len, id, &veri, attMode);
         __no_operation();
         break;
 
