@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define _TAG_0241
+#define _TAG_0242
 
 #if defined _TAG_0235
     #define _TAG_ID     0x0235

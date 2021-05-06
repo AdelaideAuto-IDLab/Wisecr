@@ -263,6 +263,17 @@ void blockWriteControlMessage(void) {
         __no_operation();
         break;
 
+    case GET_ATTESTATION_RESPONSE_No_Ki:
+        veri = *((volatile uint8_t *)&_Device_Version);
+
+        id[0] = ((uint8_t *)(INFO_WISP_TAGID))[0];
+        id[1] = ((uint8_t *)(INFO_WISP_TAGID))[1];
+        firm_len = (((unsigned short)(*ATT_LENGTH) >> 8) | ((unsigned short)(*ATT_LENGTH) << 8));
+        firm_addr = (((unsigned short)(*ATT_OFFSET) >> 8) | ((unsigned short)(*ATT_OFFSET) << 8));
+        doTINA(usrBank, _Device_Key, ATT_CHALLENGE, (uint8_t*)firm_addr, firm_len, id, &veri, attMode);
+        __no_operation();
+        break;
+
 
     default:
         break;
