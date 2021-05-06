@@ -1,0 +1,113 @@
+
+**** Build of configuration Debug for project secucode-demo ****
+
+"C:\\ti\\ccs1000\\ccs\\utils\\bin\\gmake" -k -j 8 all -O 
+ 
+../../symbol_gen/symbol_gen.exe -i ../../wisp5-bootloader/Debug/wisp5-bootloader_linkInfo.xml
+ 
+Building file: "../Centrifigual_load_test.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="Centrifigual_load_test.d_raw"  "../Centrifigual_load_test.c"
+Finished building: "../Centrifigual_load_test.c"
+ 
+Building file: "../Rotor_flapping_test.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="Rotor_flapping_test.d_raw"  "../Rotor_flapping_test.c"
+Finished building: "../Rotor_flapping_test.c"
+ 
+Building file: "../SZ115.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="SZ115.d_raw"  "../SZ115.c"
+Finished building: "../SZ115.c"
+ 
+Building file: "../catchall.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="catchall.d_raw"  "../catchall.c"
+Finished building: "../catchall.c"
+ 
+Building file: "../debug_firmware.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="debug_firmware.d_raw"  "../debug_firmware.c"
+Finished building: "../debug_firmware.c"
+ 
+Building file: "../fixedEPC_demo2.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="fixedEPC_demo2.d_raw"  "../fixedEPC_demo2.c"
+Finished building: "../fixedEPC_demo2.c"
+ 
+Building file: "../led_demo.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="led_demo.d_raw"  "../led_demo.c"
+Finished building: "../led_demo.c"
+ 
+Building file: "../run_accel.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="run_accel.d_raw"  "../run_accel.c"
+Finished building: "../run_accel.c"
+ 
+Building file: "../run_accel2.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="run_accel2.d_raw"  "../run_accel2.c"
+Finished building: "../run_accel2.c"
+ 
+Building file: "../run_temp.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="run_temp.d_raw"  "../run_temp.c"
+Finished building: "../run_temp.c"
+ 
+Building file: "../run_accel_Twarning.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="run_accel_Twarning.d_raw"  "../run_accel_Twarning.c"
+Finished building: "../run_accel_Twarning.c"
+ 
+Building file: "../test_1280_B.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/secucode-demo" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k --preproc_with_compile --preproc_dependency="test_1280_B.d_raw"  "../test_1280_B.c"
+Finished building: "../test_1280_B.c"
+ 
+Building target: "secucode-demo.out"
+Invoking: MSP430 Linker
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large -O2 --opt_for_speed=0 --use_hw_mpy=F5 --advice:power="all" --advice:hw_config="all" --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -k -z -m"secucode-demo.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1000/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/lib" -i"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/lib/FR59xx" --priority --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="secucode-demo_linkInfo.xml" --use_hw_mpy=F5 --rom_model --unused_section_elimination=on --zero_init=off -o "secucode-demo.out" "./Centrifigual_load_test.obj" "./Rotor_flapping_test.obj" "./SZ115.obj" "./catchall.obj" "./debug_firmware.obj" "./fixedEPC_demo2.obj" "./led_demo.obj" "./run_accel.obj" "./run_accel2.obj" "./run_accel_Twarning.obj" "./run_temp.obj" "./test_1280_B.obj" "../lnk_msp430fr5969_wisp5_App.cmd"  -llibc.a -llibmpu_init.a -llibmath.a 
+<Linking>
+remark #10371-D: (ULP 1.1) Detected no uses of low power mode state changing instructions
+remark #10372-D: (ULP 4.1) Detected uninitialized Port A in this project. Recommend initializing all unused ports to eliminate wasted current consumption on unused pins.
+remark #10372-D: (ULP 4.1) Detected uninitialized Port B in this project. Recommend initializing all unused ports to eliminate wasted current consumption on unused pins.
+warning #10420-D: For FRAM devices, at start up, the GPIO power-on default high-impedance mode needs to be disabled to activate previously configured port settings. This can be done by clearing the LOCKLPM5 bit in PM5CTL0 register.
+Finished building target: "secucode-demo.out"
+ 
+Building files: "secucode-demo.out"
+Invoking: MSP430 Hex Utility
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/hex430" --byte --memwidth=8 --romwidth=8 --intel -o "secucode-demo.hex"  "secucode-demo.out" 
+Translating to Intel format...
+   "secucode-demo.out" .text ==> .text
+   "secucode-demo.out" .text:_isr ==> .text:_isr
+   "secucode-demo.out" AES256 ==> AES256
+   "secucode-demo.out" RTC ==> RTC
+   "secucode-demo.out" PORT4 ==> PORT4
+   "secucode-demo.out" PORT3 ==> PORT3
+   "secucode-demo.out" TIMER3_A1 ==> TIMER3_A1
+   "secucode-demo.out" TIMER3_A0 ==> TIMER3_A0
+   "secucode-demo.out" PORT2 ==> PORT2
+   "secucode-demo.out" TIMER2_A1 ==> TIMER2_A1
+   "secucode-demo.out" TIMER2_A0 ==> TIMER2_A0
+   "secucode-demo.out" PORT1 ==> PORT1
+   "secucode-demo.out" TIMER1_A1 ==> TIMER1_A1
+   "secucode-demo.out" TIMER1_A0 ==> TIMER1_A0
+   "secucode-demo.out" DMA ==> DMA
+   "secucode-demo.out" USCI_A1 ==> USCI_A1
+   "secucode-demo.out" TIMER0_A1 ==> TIMER0_A1
+   "secucode-demo.out" TIMER0_A0 ==> TIMER0_A0
+   "secucode-demo.out" ADC12 ==> ADC12
+   "secucode-demo.out" USCI_B0 ==> USCI_B0
+   "secucode-demo.out" USCI_A0 ==> USCI_A0
+   "secucode-demo.out" WDT ==> WDT
+   "secucode-demo.out" TIMER0_B1 ==> TIMER0_B1
+   "secucode-demo.out" TIMER0_B0 ==> TIMER0_B0
+   "secucode-demo.out" COMP_E ==> COMP_E
+   "secucode-demo.out" UNMI ==> UNMI
+   "secucode-demo.out" SYSNMI ==> SYSNMI
+   "secucode-demo.out" .reset ==> .reset
+Finished building: "secucode-demo.out"
+ 
+
+**** Build Finished ****

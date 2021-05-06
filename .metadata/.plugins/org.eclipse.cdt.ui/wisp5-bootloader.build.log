@@ -1,0 +1,8 @@
+
+**** Build of configuration Debug for project wisp5-bootloader ****
+
+"C:\\ti\\ccs1000\\ccs\\utils\\bin\\gmake" -k -j 8 all -O 
+ 
+gmake[1]: 'wisp5-bootloader.out' is up to date.
+
+**** Build Finished ****

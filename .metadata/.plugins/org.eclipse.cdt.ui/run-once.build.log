@@ -1,0 +1,22 @@
+
+**** Build of configuration Debug for project run-once ****
+
+"C:\\ti\\ccs1000\\ccs\\utils\\bin\\gmake" all 
+ 
+Building file: "../main.c"
+Invoking: MSP430 Compiler
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large --use_hw_mpy=F5 --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/ccs_base/msp430/include" --include_path="C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" --include_path="C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base" --advice:hw_config=all --define=__MSP430FR5969__ --printf_support=minimal --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 --preproc_with_compile --preproc_dependency="main.d_raw"  "../main.c"
+Finished building: "../main.c"
+ 
+Building target: "run-once.out"
+Invoking: MSP430 Linker
+"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/bin/cl430" -vmspx --data_model=large --use_hw_mpy=F5 --advice:hw_config=all --define=__MSP430FR5969__ --printf_support=minimal --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"run-core.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1000/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/lib" -i"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/lib" -i"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-msp430_20.2.0.LTS/include" -i"C:/Users/nokia/Documents/GitHub/Wisecr/src/wisp5-base/CCS/wisp-base/build" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs1000/ccs/ccs_base/msp430/lib/FR59xx" --priority --reread_libs --warn_sections --use_hw_mpy=F5 --ram_model -o "run-once.out" "./boot.obj" "./catchall.obj" "./main.obj" "../lnk_msp430fr5969.cmd"  -lwisp-base.lib -llibc.a -llibmath.a 
+<Linking>
+warning: For FRAM devices, at start up, the GPIO power-on default
+   high-impedance mode needs to be disabled to activate previously configured
+   port settings. This can be done by clearing the LOCKLPM5 bit in PM5CTL0
+   register.
+Finished building target: "run-once.out"
+ 
+
+**** Build Finished ****
