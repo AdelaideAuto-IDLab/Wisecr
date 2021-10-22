@@ -192,7 +192,7 @@ namespace SecuCodeApp
                         this.reader.ResetState();
                         await Task.Delay(TimeSpan.FromMilliseconds(this.config.ReaderSleepTimeMs));
                     }
-                    
+
                     attempts += 1;
 
                     pendingTags = missingTags;
@@ -257,8 +257,9 @@ namespace SecuCodeApp
                 var tagsToCheck = results.Where(entry => entry.Value == AttestResult.Incomplete).ToArray();
                 foreach (var entry in tagsToCheck)
                 {
+                    var tag = this.config.TargetTags[entry.Key];
                     this.progress.Update(entry.Key, Stage.Attesting, 0.0, "Waiting...");
-                    results[entry.Key] = await this.AttestTag(entry.Key);
+                    results[entry.Key] = await this.AttestTag(tag);
                 }
 
                 attempts += 1;
@@ -294,35 +295,35 @@ namespace SecuCodeApp
 
         /// Attempts to perform attestation on a single tag using the currently configured 
         /// attestation mode
-        private async Task<AttestResult> AttestTag(ushort tag)
+        private async Task<AttestResult> AttestTag(Tag tag)
         {
             if (this.config.AttestMode == AttestMode.None)
             {
-                this.progress.Update(tag, Stage.Skipped, 1.0);
+                this.progress.Update(tag.TagId, Stage.Skipped, 1.0);
                 return AttestResult.Skipped;
             }
 
             // The tag must be in the bootloader state in order to run attestation
-            if (!await this.SetTagToBootloader(tag))
+            if (!await this.SetTagToBootloader(tag.TagId))
             {
                 this.progress.Info("Failed to set tag into bootloader");
                 return AttestResult.Incomplete;
             }
 
             // Check that this tag is running the target firmware version
-            var version = this.tagStates.GetTag(tag)?.Version;
+            var version = this.tagStates.GetTag(tag.TagId)?.Version;
             if (version != this.config.TargetVersion)
             {
-                this.progress.Error($"Incorrect version: {version?.ToString() ?? "not found"}", tag);
+                this.progress.Error($"Incorrect version: {version?.ToString() ?? "not found"}", tag.TagId);
                 return AttestResult.WrongVersion;
             }
 
             var (challenge, expectedResponse) = this.GetChallengeResponse(tag);
 
-            var (response, payload) = await RunAttestation(this.reader, tag, challenge, (ushort)this.config.AttestMode, this.progress);
+            var (response, payload) = await RunAttestation(this.reader, tag.TagId, challenge, (ushort)this.config.AttestMode, this.progress);
             if (!response.IsSuccess())
             {
-                this.progress.Error($"Error running attestation: {response.status}.", tag);
+                this.progress.Error($"Error running attestation: {response.status}.", tag.TagId);
                 return AttestResult.Incomplete;
             }
 
@@ -335,14 +336,14 @@ namespace SecuCodeApp
             if (!payload.SequenceEqual(expectedResponse))
 #endif
             {
-                this.progress.Error($"Bad response (got: {payload.ToByteString()}, expected: {expectedResponse.ToByteString()})", tag);
+                this.progress.Error($"Bad response (got: {payload.ToByteString()}, expected: {expectedResponse.ToByteString()})", tag.TagId);
                 return AttestResult.Failed;
             }
 
             // Attempt to return tag to user code
-            _ = await this.reader.SendRestartInUserMode(tag, TimeSpan.FromSeconds(1.0));
+            _ = await this.reader.SendRestartInUserMode(tag.TagId, TimeSpan.FromSeconds(1.0));
 
-            this.progress.Update(tag, Stage.Done, 1.0);
+            this.progress.Update(tag.TagId, Stage.Done, 1.0);
             return AttestResult.Passed;
         }
 
@@ -528,25 +529,33 @@ namespace SecuCodeApp
         }
 
         /// Helper function for getting an attestation (challange, response) pair for a target tag
-        private (byte[] challenge, byte[] response) GetChallengeResponse(ushort tag)
+        private (byte[] challenge, byte[] response) GetChallengeResponse(Tag tag)
         {
             var (offset, data) = this.config.Firmware.Segments[0];
+
+            var sessionKey = new byte[16];
+            new Random().NextBytes(sessionKey);
+
+            var encryptedSessionKey = Native.TinyCrypt.AesEncrypt_DefaultIV(tag.DeviceKey, sessionKey);
 
             var rand16 = new byte[16];
             new Random().NextBytes(rand16);
 
             var challenge = (new byte[] { (byte)(offset >> 8), (byte)offset, (byte)(data.Length >> 8), (byte)data.Length })
                 .Concat(rand16)
+                .Concat(encryptedSessionKey)
                 .ToArray();
 
+            this.progress.Info($"Session key: {sessionKey.ToByteString()}");
             this.progress.Info($"Attestation challenge: {challenge.ToByteString()}");
-            this.progress.Update(tag, 0.1, $"Challenge = {challenge.ToByteString()}");
+
+            this.progress.Update(tag.TagId, 0.1, $"Challenge = {challenge.ToByteString()}");
 
             var response = Native.TinyCrypt.ComputeAttestationResponse(
-                this.config.TargetTags[tag].DeviceKey,
+                sessionKey,
                 rand16,
                 data,
-                tag,
+                tag.TagId,
                 this.config.TargetVersion,
                 this.config.AttestMode == AttestMode.Full
             );
