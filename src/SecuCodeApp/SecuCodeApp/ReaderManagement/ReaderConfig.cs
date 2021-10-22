@@ -132,7 +132,7 @@ namespace SecuCodeApp
             return new Result<MSG_DELETE_ACCESSSPEC_RESPONSE>(response, error);
         }
 
-        public static Result<MSG_ADD_ROSPEC_RESPONSE> Add_RoSpec(this LLRPClient reader, TimeSpan? timeout = null)
+        public static Result<MSG_ADD_ROSPEC_RESPONSE> Add_RoSpec(this LLRPClient reader, uint modeIndex, ushort? txPowerIndex, TimeSpan? timeout = null)
         {
             var startTrigger = new PARAM_ROSpecStartTrigger { ROSpecStartTriggerType = ENUM_ROSpecStartTriggerType.Immediate };
             var stopTrigger = new PARAM_ROSpecStopTrigger { ROSpecStopTriggerType = ENUM_ROSpecStopTriggerType.Null };
@@ -166,7 +166,7 @@ namespace SecuCodeApp
                 SpecParameter = new UNION_SpecParameter(),
             };
 
-            ROSpec.SpecParameter.Add(WispInventoryAISpec());
+            ROSpec.SpecParameter.Add(WispInventoryAISpec(modeIndex, txPowerIndex));
 
             var message = new MSG_ADD_ROSPEC() { ROSpec = ROSpec };
             var response = reader.ADD_ROSPEC(message, out var error, 2000);
@@ -190,16 +190,17 @@ namespace SecuCodeApp
             return new Result<MSG_DELETE_ROSPEC_RESPONSE>(response, error);
         }
 
-        private static PARAM_AISpec WispInventoryAISpec(ushort tagPopulation = 4)
+        private static PARAM_AISpec WispInventoryAISpec(uint modeIndex, ushort? txPowerIndex, ushort tagPopulation = 4)
         {
             var antennaConfig = new PARAM_AntennaConfiguration()
             {
                 AntennaID = 1,
                 AirProtocolInventoryCommandSettings = new UNION_AirProtocolInventoryCommandSettings(),
+                RFTransmitter = txPowerIndex != null ? new PARAM_RFTransmitter() { HopTableID = 1, ChannelIndex = 0, TransmitPower = (ushort)txPowerIndex } : null
             };
             var inventoryCommand = new PARAM_C1G2InventoryCommand()
             {
-                C1G2RFControl = new PARAM_C1G2RFControl() { ModeIndex = 0, Tari = 0 },
+                C1G2RFControl = new PARAM_C1G2RFControl() { ModeIndex = (ushort)modeIndex, Tari = 0 },
                 C1G2SingulationControl = new PARAM_C1G2SingulationControl() { Session = new TwoBits(1), TagPopulation = tagPopulation },
                 TagInventoryStateAware = false,
             };

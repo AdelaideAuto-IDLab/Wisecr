@@ -71,10 +71,10 @@ namespace SecuCodeApp
         }
     }
 
-    public class Result<T> where T : Message
+    public struct Result<T> where T : Message
     {
-        private MSG_ERROR_MESSAGE error;
-        private readonly T response;
+        public readonly MSG_ERROR_MESSAGE error;
+        public readonly T response;
 
         public Result(T response, MSG_ERROR_MESSAGE error)
         {

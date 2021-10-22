@@ -35,6 +35,8 @@ namespace SecuCodeApp
 
         public ObservableCollection<EpcEntry> MacAddressCounts { get; set; } = new ObservableCollection<EpcEntry>();
         public ObservableCollection<TagEntry> TagList { get; set; } = new ObservableCollection<TagEntry>();
+        public ObservableCollection<ReaderTxPowerEntry> ReaderTxPower { get; set; } = new ObservableCollection<ReaderTxPowerEntry>();
+        public ObservableCollection<ReaderModeEntry> ReaderMode { get; set; } = new ObservableCollection<ReaderModeEntry>();
 
         private Dictionary<string, Tag> tagConfig = new Dictionary<string, Tag>();
         private Tag selectedTag;
@@ -77,6 +79,8 @@ namespace SecuCodeApp
 
                 this.activeTags.Add($"{entry.Value.TagId:X4}", entry.Value);
             }
+
+            this.ReaderTxPower.Add(new ReaderTxPowerEntry());
 
             this.UpdateKeyTextBox(this.sessionKey.ToByteString());
             this.maxAttemptsTextBox.Text = this.MaxAttempts.ToString();
@@ -262,6 +266,47 @@ namespace SecuCodeApp
 
             Properties.Settings.Default.ConnectionString = this.ReaderIpText.Trim();
             Properties.Settings.Default.Save();
+
+            try
+            {
+                var capabilities = this.reader.GetReaderCapabilities();
+
+                var prevSelection = this.readerTxPower.SelectedIndex;
+
+                this.ReaderTxPower.Clear();
+                this.ReaderTxPower.Add(new ReaderTxPowerEntry());
+                foreach (var entry in capabilities.RegulatoryCapabilities.UHFBandCapabilities.TransmitPowerLevelTableEntry)
+                {
+                    this.ReaderTxPower.Add(new ReaderTxPowerEntry() { value = entry });
+                }
+
+                if (prevSelection < this.ReaderTxPower.Count)
+                {
+                    this.readerTxPower.SelectedIndex = prevSelection;
+                }
+
+                this.ReaderMode.Clear();
+                var modeTable = capabilities.RegulatoryCapabilities.UHFBandCapabilities.AirProtocolUHFRFModeTable;
+                
+                for (var i = 0; i < modeTable.Count; ++i)
+                {
+                    foreach (var entry in ((PARAM_C1G2UHFRFModeTable)modeTable[i]).C1G2UHFRFModeTableEntry)
+                    {
+                        this.ReaderMode.Add(new ReaderModeEntry() { value = entry });
+                        if (entry.ModeIdentifier == 1000)
+                        {
+                            this.readerMode.SelectedIndex = this.ReaderMode.Count - 1;
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                BasicMessageBox.Show($"{ex.Message}\n{ex.StackTrace}", "Failed to obtain reader capabilities");
+                this.Disconnect();
+                return;
+            }
 
             this.reader.reader.OnRoAccessReportReceived += this.Reader_OnRoAccessReportReceived;
             this.reader.ResetState();
@@ -749,6 +794,30 @@ namespace SecuCodeApp
         }
 
         #endregion
+
+        private void ReaderMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.reader.IsConnected())
+            {
+                var item = ((ReaderModeEntry)this.readerMode.SelectedItem);
+                if (item != null)
+                {
+                    this.reader.readerModeIndex = item.value.ModeIdentifier;
+                }
+            }
+        }
+
+        private void ReaderTxPower_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.reader.IsConnected())
+            {
+                var item = ((ReaderTxPowerEntry)this.readerTxPower.SelectedItem);
+                if (item != null)
+                {
+                    this.reader.readerTxPowerIndex = item.value?.Index;
+                }
+            }
+        }
     }
 
     public class EpcEntry : INotifyPropertyChanged
@@ -810,5 +879,51 @@ namespace SecuCodeApp
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+    }
+
+    public class ReaderTxPowerEntry
+    {
+        public PARAM_TransmitPowerLevelTableEntry value;
+
+        public string TxPower
+        {
+            get { return this.value != null ? this.value.TransmitPowerValue.ToString() : "Auto"; }
+        }
+    }
+
+    public class ReaderModeEntry
+    {
+        static readonly Dictionary<uint, string> NAME_MAPPING = new Dictionary<uint, string>
+        {
+            { 0, "[0] Max Throughput" },
+            { 1, "[1] Hybrid" },
+            { 2, "[2] Dense Reader (M=4)" },
+            { 3, "[3] Dense Reader (M=8)" },
+            { 4, "[4] MaxMiller" },
+
+            { 1000, "[1000] AutoSet Dense Reader" },
+            { 1002, "[1002] AutoSet Dense Reader Deep Scan" },
+            { 1003, "[1003] AutoSet Static Fast" },
+            { 1004, "[1004] AutoSet Static Dense Reader" },
+            { 1005, "[1005] AutoSet Reserved" },
+        };
+
+        public PARAM_C1G2UHFRFModeTableEntry value;
+
+        public string Mode
+        {
+            get {
+                var i = this.value.ModeIdentifier;
+                if (NAME_MAPPING.TryGetValue(i, out var name))
+                {
+                    return name;
+                }
+                else
+                {
+                    return i.ToString();
+                }
+            }
+        }
+
     }
 }

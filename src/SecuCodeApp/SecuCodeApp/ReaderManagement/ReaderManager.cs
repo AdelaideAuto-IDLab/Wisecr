@@ -35,6 +35,8 @@ namespace SecuCodeApp
     public class ReaderManager
     {
         public LLRPClient reader;
+        public ushort? readerTxPowerIndex = null;
+        public uint readerModeIndex = 0;
 
         private int nextAccessCmdId = 1;
 
@@ -54,6 +56,12 @@ namespace SecuCodeApp
 
             this.reader = new LLRPClient();
             this.reader.Open(address, 2000, out var status);
+
+            if (status != ENUM_ConnectionAttemptStatusType.Success)
+            {
+                return status;
+            }
+
             //this.reader.Enable_ImpinjExtensions();
             this.reader.Enable_EventsAndReports();
 
@@ -61,7 +69,21 @@ namespace SecuCodeApp
 
             this.connectionCancellationSource = new CancellationTokenSource();
 
-            return status;
+            return ENUM_ConnectionAttemptStatusType.Success;
+        }
+
+
+        public MSG_GET_READER_CAPABILITIES_RESPONSE GetReaderCapabilities()
+        {
+            var request = new MSG_GET_READER_CAPABILITIES { RequestedData = ENUM_GetReaderCapabilitiesRequestedData.All };
+            var capabilities = this.reader.GET_READER_CAPABILITIES(request, out var err, 1000);
+            if (err != null)
+            {
+                throw new Exception("Error getting reader capabilities");
+            }
+
+            return capabilities;
+
         }
 
         /// <summary>
@@ -142,7 +164,7 @@ namespace SecuCodeApp
 
             this.reader.Delete_AccessSpec();
             this.reader.Delete_RoSpec(1);
-            this.reader.Add_RoSpec(duration);
+            this.AddRoSpec(duration);
             this.reader.Enable_RoSpec(1);
 
             try
@@ -155,6 +177,15 @@ namespace SecuCodeApp
             }
 
             this.reader.Delete_RoSpec(1);
+        }
+
+        private void AddRoSpec(TimeSpan? duration = null)
+        {
+            var result = this.reader.Add_RoSpec(this.readerModeIndex, this.readerTxPowerIndex, duration);
+            if (result.error != null)
+            {
+                throw new Exception("Error adding RoSpec: " + result.error.ToString());
+            }
         }
 
         /// <summary>
@@ -403,7 +434,7 @@ namespace SecuCodeApp
         {
             this.reader.Enable_AccessSpec();
 
-            this.reader.Add_RoSpec(timeout);
+            this.AddRoSpec(timeout);
             this.reader.Enable_RoSpec(1);
 
             var response = await new TagReportTask(this.reader, tagId, OnEpc(tagId, check), timeout, this.connectionCancellationSource.Token).Task;
@@ -422,7 +453,7 @@ namespace SecuCodeApp
         {
             this.reader.Enable_AccessSpec();
 
-            this.reader.Add_RoSpec(timeout);
+            this.AddRoSpec(timeout);
             this.reader.Enable_RoSpec(1);
 
             var response = await new TagReportTask(this.reader, tagId, OnBlockWriteAck(commands, tagId), timeout, this.connectionCancellationSource.Token).Task;
@@ -437,7 +468,7 @@ namespace SecuCodeApp
         {
             this.reader.Enable_AccessSpec();
 
-            this.reader.Add_RoSpec(timeout);
+            this.AddRoSpec(timeout);
             this.reader.Enable_RoSpec(1);
 
             var task = new TagReportTask(this.reader, tagId, (msg) => null, timeout, this.connectionCancellationSource.Token, true);
@@ -473,7 +504,7 @@ namespace SecuCodeApp
         {
             this.reader.Enable_AccessSpec();
 
-            this.reader.Add_RoSpec();
+            this.AddRoSpec();
             this.reader.Enable_RoSpec(1);
 
             byte[] bytes = null;
