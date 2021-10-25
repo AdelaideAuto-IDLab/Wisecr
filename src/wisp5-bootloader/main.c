@@ -244,7 +244,7 @@ static void MPU_init_app(void) {
     MPUSAM |= (MPUSEG1RE | MPUSEG1WE | MPUSEG1XE);
 
     // Segment 2 (secure area) is protected from read, write and exec
-    MPUSAM &= ~(MPUSEG2WE | MPUSEG2WE | MPUSEG2XE);
+    MPUSAM &= ~(MPUSEG2RE | MPUSEG2WE | MPUSEG2XE);
     MPUSAM |= MPUSEG2VS;
 
     // Segment 3 (bootloader) is protected from write
