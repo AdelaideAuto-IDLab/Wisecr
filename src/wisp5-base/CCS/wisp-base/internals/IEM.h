@@ -16,6 +16,7 @@
 inline void EnterPAM(uint8_t sleepT, uint8_t activeT);
 inline void BWIEM(void);
 inline void INIEM(void);
+inline void IEM(void);
 inline void ExitPAM(void);
 
 typedef struct {

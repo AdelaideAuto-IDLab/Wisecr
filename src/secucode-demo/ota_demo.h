@@ -6,7 +6,7 @@
 #include "wisp-base.h"
 
 //#define LED_DEMO
-//#define TEMP_DEMO
+#define TEMP_DEMO
 //#define ACCEL_DEMO
 //#define ACCEL_DEMO2
 //#define ACCEL_DEMO_W
@@ -15,6 +15,6 @@
 //#define SZ115B
 //#define SZ1280B
 //#define Centrifigual_load_test
-#define Rotor_flapping_test
+//#define Rotor_flapping_test
 
 #endif /* OTA_DEMO_H_ */

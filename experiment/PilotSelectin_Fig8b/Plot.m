@@ -2,10 +2,12 @@ clear all;
 close all;
 clc;
 
-Root_path = "./30cm/";
-method = ["Random","RR_Hi","RR_Lo","RSSI_Hi","RSSI_Lo","Vt_Hi","Vt_Lo"];
-methodS = ["Random","RR_{Hi}","RR_{Lo}","RSSI_{Hi}","RSSI_{Lo}","Vt_{Hi}","Vt_{Lo}"];
+Root_path = "./50cm/";
+% method = ["Random","RR_Hi","RR_Lo","RSSI_Hi","RSSI_Lo","Vt_Hi","Vt_Lo"];
+% methodS = ["Random","RR_{Hi}","RR_{Lo}","RSSI_{Hi}","RSSI_{Lo}","Vt_{Hi}","Vt_{Lo}"];
 
+method = ["Vt_Lo","Vt_Hi","RR_Lo","RR_Hi","RSSI_Lo","RSSI_Hi","Random"];
+methodS = ["Lowest Vt","Highest Vt","Lowest Read Rate","Highest Read Rate","Lowest RSSI","Highest RSSI","Random"];
 
 for midx = 1:length(method)
     %% pie chart for attempts

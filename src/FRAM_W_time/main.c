@@ -21,6 +21,20 @@
 
 static uint16_t* BASE_ADDRESS = (uint16_t*)0x10000;
 
+#define BUFF_SIZE 16
+
+// buffers in SRAM
+uint16_t SRAM_Buff1[BUFF_SIZE];
+uint16_t SRAM_Buff2[BUFF_SIZE];
+
+// buffers in FRAM
+#pragma PERSISTENT(FRAM_Buff1)
+#pragma location = 0x10000
+uint16_t FRAM_Buff1[BUFF_SIZE] = {0};
+#pragma PERSISTENT(FRAM_Buff2)
+#pragma location = 0x10020
+uint16_t FRAM_Buff2[BUFF_SIZE] = {0};
+
 uint16_t rawV;
 uint16_t miliVolt_start;
 uint16_t miliVolt_finish;
@@ -86,15 +100,36 @@ int main(void)
 
     // Initialize WISP specific internals
     WISP_init();
+    uint8_t sram_array[256];
 
     //Clear GPIO pin
     P1OUT &= ~BIT4;
 
     // Pull up GPIO pin
     P1OUT |= BIT4;
-    volatile uint8_t kdx;
-    for(kdx=255;kdx>-1;kdx--){
-        SRAM_buff = BASE_ADDRESS[kdx];
+
+    // Configure DMA channel 0
+//          __data20_write_long((uintptr_t) &DMA0SA,(uintptr_t) BASE_ADDRESS);
+//                                                    // Source block address
+//          __data20_write_long((uintptr_t) &DMA0DA,(uintptr_t) sram_array);
+//                                                    // Destination single address
+//          DMA0SZ = 16;                              // Block size
+//          DMA0CTL = DMADT_5 | DMASRCINCR_3 | DMADSTINCR_3; // Rpt, inc
+//          DMA0CTL |= DMAEN;                         // Enable DMA0
+    uint16_t i,j;
+    while(1){
+//        memcpy(sram_array,BASE_ADDRESS,256);
+//        memcpy(sram_array,BASE_ADDRESS+256,256);
+//        DMA0CTL |= DMAREQ;                      // Trigger block transfer
+        /* fram read */
+        for(i=0; i<1000; i++){
+            for (j=0;j<BUFF_SIZE;j++){
+                SRAM_Buff1[j]=FRAM_Buff1[j];
+            }
+            for (j=0;j<BUFF_SIZE;j++){
+                SRAM_Buff2[j]=FRAM_Buff2[j];
+            }
+        }
     }
 }
 

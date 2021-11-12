@@ -54,9 +54,13 @@ void WISP_init(void) {
     PRXEOUT |= PIN_RX_EN; /** TODO: enable PIN_RX_EN only when needed in the future */
 
     CSCTL0_H = 0xA5;
+    CSCTL4 &= ~LFXTDRIVE0;
+    CSCTL4 &= ~LFXTDRIVE1;
     CSCTL1 = DCOFSEL_0; //DCO freq = 1MHz
+//    CSCTL1 = DCOFSEL_1; //DCO freq = 2.7MHz
     CSCTL2 = SELA__VLOCLK + SELS_3 + SELM_3; // AuxCLK = VLOCLK; SubMainCLK = DCOCLK; MasterCLK = DCOCLK
     CSCTL3 = DIVA_0 + DIVS_0 + DIVM_0; // no divide for all CLKs
+//    CSCTL3 = DIVA_0 + DIVS__4 + DIVS__4; // no divide for ACLK, M and SM use 8/4 = 2MHz
 	BITCLR(CSCTL6 , (MODCLKREQEN|SMCLKREQEN|MCLKREQEN));//disable conditional requests for all MODCLK SMCLK MCLLK
 	BITSET(CSCTL6 , ACLKREQEN);// enable conditional request for
 

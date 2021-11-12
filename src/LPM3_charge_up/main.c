@@ -64,7 +64,7 @@ static void HW_init(void);
 static void MPU_init(void);
 
 extern void CopyWispISRs(void);
-extern inline void TTIEM(void);
+extern inline void TTIEM(uint16_t time);
 extern inline void EnterPAM(uint8_t sleepT, uint8_t activeT);
 extern inline void ExitPAM(void);
 
@@ -275,81 +275,29 @@ static uint8_t Tag[16];
 int main(void)
 {
     HW_init();
+        // Initialize WISP specific internals
+        WISP_init();
+        ADC_init();
 
-    tBOOL app_valid = TI_MSPBoot_AppMgr_ValidateApp();
-    if (!app_valid) {
-        CopyWispISRs();
-
-    }
-
-
-    // Initialize WISP specific internals
-    WISP_init();
-//    ADC_init();
-
-//    //Test Touch [4551]
-//    P1OUT |= BIT4;
-//    TTIEM();
-//    P1OUT &= ~BIT4;
-//    rawV = ADC_read();
-//    __no_operation();
-//    __no_operation();
-//    __no_operation();
-//    __no_operation();
-//    __no_operation();
-//    __no_operation();
-//    __no_operation();
-//    __no_operation();
+    //    //Test Touch [4551]
+        P1OUT |= BIT4;
+        TTIEM(30);
+        P1OUT &= ~BIT4;
+        rawV = ADC_read();
+        miliVolt_start = 2*ADC_rawToVoltage(rawV); // times 2 because there is a half voltage divider
+        TTIEM(970); // to make 1 second
 
     struct tc_cmac_struct c;// c;
     __no_operation();
     P1OUT |= BIT4;
-                        // EnterPAM(SleepT,ActiveT), watchout the order.
-    EnterPAM(30,5); // as long as the sleep time is 0, PAM won't be enabled, regardless the active time
-    __no_operation();
+    while(1){
+        // EnterPAM(SleepT,ActiveT), watchout the order.
+//    EnterPAM(30,5); // as long as the sleep time is 0, PAM won't be enabled, regardless the active time
+//    __no_operation();
     tc_cmac_AIO(&c,fkey,msg,1280,Tag);
+    }
+
     P1OUT &= ~BIT4;
-    ExitPAM();
-
-
-
-    miliVolt_start = 2*ADC_rawToVoltage(rawV); // times 2 because there is a half voltage divider
-
-//    memcpy(usrBank,&miliVolt_start,2);
-//    memcpy((usrBank+2),&miliVolt_finish,2);
-
-    usrBank[0] = (miliVolt_start >> 8);
-    usrBank[1] = (miliVolt_start & 0xff);
-
-    // Validate the application and jump if needed
-    if (app_valid == TRUE_t) {
-        // Copy app ISRs then setup MPU segements and lock the MPU registers
-        CopyAppISRs();
-        MPU_init();
-
-        // Enable the Watchdog again then jump to app
-        WDTCTL = WDTPW + WDTCNTCL;
-        TI_MSPBoot_APPMGR_JUMPTOAPP();
-    }
-
-    TI_MSPBoot_CI_Init();      // Initialize the Communication Interface
-
-    //need to put TeTo value after the wispData initialization
-    wispData.epcBuf[6] = (miliVolt_start >> 8);
-    wispData.epcBuf[7] = (miliVolt_start & 0xff);
-
-    while(1)
-    {
-        // Poll PHY and Data Link interface for new packets
-        TI_MSPBoot_CI_PHYDL_Poll();
-
-        // If a new packet is detected, process it
-        if (TI_MSPBoot_CI_Process() == RET_JUMP_TO_APP)
-        {
-            // If Packet indicates a jump to App
-            TI_MSPBoot_AppMgr_JumpToApp();
-        }
-    }
 }
 
 

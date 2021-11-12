@@ -1,0 +1,1 @@
+"./main.obj" "./secure_area.obj" "./AppMgr/Crc.obj" "./AppMgr/TI_MSPBoot_AppMgrDualImg.obj" "./Comm/NWK_APP/TI_MSPBoot_CI_NWK_APP_BSL_CC1101.obj" "./Comm/PHY_DataLink/TI_MSPBoot_CI_PHYDL_wisp5.obj" "./MI/TI_MSPBoot_MI_FRAMDualImg.obj" "../lnk_msp430fr5969_wisp5_Boot.cmd" -lwisp-base.lib -llibc.a -llibmpu_init.a -llibmath.a 

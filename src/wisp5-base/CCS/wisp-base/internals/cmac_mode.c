@@ -40,6 +40,8 @@
 
 struct AES_ctx aes_ctx;//
 
+extern inline void IEM(void);
+
 uint32_t _copy(uint8_t *to, uint32_t to_len,
            const uint8_t *from, uint32_t from_len)
 {
@@ -137,7 +139,9 @@ void gf_double(uint8_t *out, uint8_t *in)
 
 int tc_cmac_setup(TCCmacState_t s, const uint8_t *key)
 {
-
+//#ifdef IEM30MS
+//    IEM();////////////////////////////////////////////////////////////////////////////////////////////////////            IEM
+//#endif
 	/* input sanity check: */
 	if (s == (TCCmacState_t) 0 ||
 	    key == (const uint8_t *) 0) {
@@ -174,6 +178,9 @@ int tc_cmac_erase(TCCmacState_t s)
 
 int tc_cmac_init(TCCmacState_t s)
 {
+//#ifdef IEM30MS
+//    IEM();////////////////////////////////////////////////////////////////////////////////////////////////////            IEM
+//#endif
 	/* input sanity check: */
 	if (s == (TCCmacState_t) 0) {
 		return TC_CRYPTO_FAIL;
@@ -239,7 +246,16 @@ int tc_cmac_update(TCCmacState_t s, const uint8_t *data, size_t data_length)
 	}
 
 	/* CBC encrypt each (except the last) of the data blocks */
+#ifdef IEM30MS
+	int round_i = 0;
+#endif
 	while (data_length > TC_AES_BLOCK_SIZE) {
+#ifdef IEM30MS
+	    if(0 == round_i%8){//sleep every 8 blocks
+	        IEM();////////////////////////////////////////////////////////////////////////////////////////////////////            IEM
+	    }
+	    round_i++;
+#endif
 		for (i = 0; i < TC_AES_BLOCK_SIZE; ++i) {
 			s->iv[i] ^= data[i];
 		}
@@ -259,6 +275,9 @@ int tc_cmac_update(TCCmacState_t s, const uint8_t *data, size_t data_length)
 
 int tc_cmac_final(uint8_t *tag, TCCmacState_t s)
 {
+#ifdef IEM30MS
+    IEM();////////////////////////////////////////////////////////////////////////////////////////////////////            IEM
+#endif
 	uint8_t *k;
 	unsigned int i;
 
@@ -284,7 +303,9 @@ int tc_cmac_final(uint8_t *tag, TCCmacState_t s)
 	}
 
 	tc_aes_encrypt(tag, s->iv);
-
+#ifdef IEM30MS
+    IEM();////////////////////////////////////////////////////////////////////////////////////////////////////            IEM
+#endif
 	/* erasing state: */
 	tc_cmac_erase(s);
 

@@ -310,15 +310,18 @@ int main(void)
     __no_operation();
     __no_operation();
 //
+    register int16_t value_1 = 1;
+    register int16_t value_2 = 2;
     while(1){
-        tc_cmac_AIO(&c,fkey,msg,1280,Tag);
+        value_1 = value_1 + value_2;
+        value_2 = value_1 - value_2;
     }
     //ExitPAM();
     P1OUT &= ~BIT4;
 
 
-
-    miliVolt_start = 2*ADC_rawToVoltage(rawV); // times 2 because there is a half voltage divider
+//
+//    miliVolt_start = 2*ADC_rawToVoltage(rawV); // times 2 because there is a half voltage divider
 
 //    memcpy(usrBank,&miliVolt_start,2);
 //    memcpy((usrBank+2),&miliVolt_finish,2);

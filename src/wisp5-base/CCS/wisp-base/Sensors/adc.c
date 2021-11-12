@@ -24,7 +24,8 @@ static struct {
  * Configure the ADC12_B module in single channel single measurement mode and prepare for measurement.
  */
 void ADC_init(void) {
-    ADC_initCustom(ADC_reference_2_0V, ADC_precision_10bit, ADC_input_A9);
+//    ADC_initCustom(ADC_reference_2_0V, ADC_precision_10bit, ADC_input_A9);
+    ADC_initCustom(ADC_reference_2_0V, ADC_precision_12bit, ADC_input_A9);
 }
 
 /**
