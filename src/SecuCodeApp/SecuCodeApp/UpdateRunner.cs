@@ -174,7 +174,7 @@ namespace SecuCodeApp
             }
 
             var attempts = 0;
-            while (attempts < this.config.MaxAttempts)
+            while (true)
             {
                 var scanResults = await UpdatePendingTagStates();
                 if (tagMetadata == null)
@@ -203,6 +203,14 @@ namespace SecuCodeApp
                 // If there are still no pending tags, we are done
                 if (pendingTags.Count == 0)
                 {
+                    this.progress.Info($"No more tags pending\n");
+                    break;
+                }
+
+                // If we have exceeded the maximum number of allowed attempts, exit now.
+                if (attempts >= this.config.MaxAttempts)
+                {
+                    this.progress.Info($"Exceeded maximum number of attempts without updating all tags.\n");
                     break;
                 }
 

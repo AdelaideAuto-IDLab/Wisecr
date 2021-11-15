@@ -346,16 +346,21 @@ namespace SecuCodeApp
 
         private void AddTagData(PARAM_TagReportData tagReportData)
         {
+            var epcBytes = Utils.GetEpcBytes(tagReportData.EPCParameter[0]);
+            if (epcBytes == null || epcBytes.Length < 12)
+            {
+                return;
+            }
+
             var epc = Utils.GetEpcString(tagReportData.EPCParameter[0]);
             try
             {
+                var maskedEpc = Utils.MaskEpc(epc);
+                var tagId = epc.Substring(2 * 10);
+
                 this.listBox.Dispatcher.Invoke(() =>
                 {
-                    var maskedEpc = Utils.MaskEpc(epc);
-
-                    var tagId = epc.Substring(2 * 10);
-                    var epcBytes = Utils.GetEpcBytes(tagReportData.EPCParameter[0]);
-
+                 
                     if (this.activeTags.ContainsKey(tagId))
                     {
                         var voltage = (epcBytes[6] << 8) | epcBytes[7];

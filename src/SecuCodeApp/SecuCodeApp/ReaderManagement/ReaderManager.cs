@@ -806,7 +806,7 @@ namespace SecuCodeApp
                 var tags = message.TagReportData
                     .Where(data => data.EPCParameter.Count > 0)
                     .Select(data => DataHelpers.GetEpc(data.EPCParameter[0]))
-                    .Where(data => data.Length > 10);
+                    .Where(data => data.Length >= 12);
 
                 foreach (var tag in tags)
                 {

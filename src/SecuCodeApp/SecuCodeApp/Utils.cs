@@ -43,33 +43,23 @@ namespace SecuCodeApp
         /// Converts an LLRP EPC choice parameter to a hex string
         public static string GetEpcString(IParameter epcField)
         {
-            switch (epcField)
+            return epcField switch
             {
-                case PARAM_EPC_96 epc:
-                    return epc.EPC.ToHexString();
-
-                case PARAM_EPCData epc:
-                    return epc.EPC.ToHexString();
-
-                default:
-                    return "Unknown";
-            }
+                PARAM_EPC_96 epc => epc.EPC.ToHexString(),
+                PARAM_EPCData epc => epc.EPC.ToHexString(),
+                _ => "Unknown",
+            };
         }
 
         /// Converts an LLRP EPC choice parameter to a byte array
         public static byte[] GetEpcBytes(IParameter epcField)
         {
-            switch (epcField)
+            return epcField switch
             {
-                case PARAM_EPC_96 epc:
-                    return epc.EPC.ToBytes();
-
-                case PARAM_EPCData epc:
-                    return epc.EPC.ToBytes();
-
-                default:
-                    return null;
-            }
+                PARAM_EPC_96 epc => epc.EPC.ToBytes(),
+                PARAM_EPCData epc => epc.EPC.ToBytes(),
+                _ => null,
+            };
         }
 
         /// Calculates the number of additional bytes required to align `length` bytes to an alignment of `alignment` bytes
