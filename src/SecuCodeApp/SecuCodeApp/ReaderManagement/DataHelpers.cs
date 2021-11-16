@@ -12,15 +12,54 @@ namespace SecuCodeApp
         /// </summary>
         public static byte[] GetEpc(IParameter epcField)
         {
-            switch (epcField)
+            return epcField switch
             {
-                case PARAM_EPC_96 epc:
-                    return epc.EPC.ToBytes();
-                case PARAM_EPCData epc:
-                    return epc.EPC.ToBytes();
-                default:
-                    return System.Array.Empty<byte>();
+                PARAM_EPC_96 epc => epc.EPC.ToBytes(),
+                PARAM_EPCData epc => epc.EPC.ToBytes(),
+                _ => System.Array.Empty<byte>(),
+            };
+        }
+
+        public static byte[] GetEpc(UNION_EPCParameter epcParam)
+        {
+            if (epcParam.Count < 1)
+            {
+                // @todo: consider returning null here instead.
+                return System.Array.Empty<byte>();
             }
+            return GetEpc(epcParam[0]);
+        }
+
+        /// <summary>
+        /// Converts an LLRP EPC choice parameter to a hex string
+        /// </summary>
+        public static string GetEpcString(IParameter epcField)
+        {
+            return epcField switch
+            {
+                PARAM_EPC_96 epc => epc.EPC.ToHexString(),
+                PARAM_EPCData epc => epc.EPC.ToHexString(),
+                _ => "Unknown",
+            };
+        }
+
+
+        /// <summary>
+        /// Helper function for masking all bytes of an EPC that we expect to be changing
+        /// </summary>
+        public static string MaskEpc(string baseEpc)
+        {
+            return baseEpc.Substring(0, 2) + ".................." + baseEpc.Substring(2 * 10);
+        }
+
+        /// <summary>
+        /// Extracts all EPC values from a RoAccessReport that have the correct format for the Wisp Tags.
+        /// </summary>
+        public static IEnumerable<byte[]> ExtractValidEpcValues(MSG_RO_ACCESS_REPORT message)
+        {
+            return message.TagReportData
+                .Select(data => GetEpc(data.EPCParameter))
+                .Where(data => data != null && data.Length >= 12);
         }
 
         /// <summary>

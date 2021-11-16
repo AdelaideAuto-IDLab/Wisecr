@@ -528,12 +528,10 @@ namespace SecuCodeApp
                     }
 
                     // Check if the EPC has changed to a restart value (indicates power failure)
-                    if (data.EPCParameter.Count > 0)
+                    var epc = DataHelpers.GetEpc(data.EPCParameter);
+                    if (epc != null && epc.Length > 1 && epc[1] == (byte)TagState.RestartInBootMode)
                     {
-                        if (DataHelpers.GetEpc(data.EPCParameter[0])[1] == (byte)TagState.RestartInBootMode)
-                        {
-                            return SecuCode.StatusCode.PowerFailure;
-                        }
+                        return SecuCode.StatusCode.PowerFailure;
                     }
                 }
 
@@ -563,10 +561,7 @@ namespace SecuCodeApp
                     return null;
                 }
 
-                foreach (var epc in message.TagReportData
-                    .Where(data => data.EPCParameter.Count > 0)
-                    .Select(data => DataHelpers.GetEpc(data.EPCParameter[0]))
-                    .Where(data => data.Length > 10))
+                foreach (var epc in DataHelpers.ExtractValidEpcValues(message))
                 {
                     if (epc[10] != (tagId >> 8) || epc[11] != (tagId & 0xFF))
                     {
@@ -585,12 +580,12 @@ namespace SecuCodeApp
                     }
                 }
 
+                // Extract all BlockWrite results that match the target tag.
                 var results = message.TagReportData
-                    .Where(data => data.EPCParameter.Count > 0)
                     .Where(data =>
                     {
-                        var epc = DataHelpers.GetEpc(data.EPCParameter[0]);
-                        return epc[10] == (tagId >> 8) && epc[11] == (tagId & 0xFF);
+                        var epc = DataHelpers.GetEpc(data.EPCParameter);
+                        return epc != null && epc.Length >= 12 && epc[10] == (tagId >> 8) && epc[11] == (tagId & 0xFF);
                     })
                     .SelectMany(data => data.AccessCommandOpSpecResult.ToList())
                     .Select(data => data as PARAM_C1G2BlockWriteOpSpecResult)
@@ -643,11 +638,7 @@ namespace SecuCodeApp
                     return null;
                 }
 
-                var tags = message.TagReportData
-                    .Where(data => data.EPCParameter.Count > 0)
-                    .Select(data => DataHelpers.GetEpc(data.EPCParameter[0]))
-                    .Where(data => data.Length > 10);
-
+                var tags = DataHelpers.ExtractValidEpcValues(message);
                 foreach (var tag in tags)
                 {
                     if (tag[10] != (tagId >> 8) || tag[11] != (tagId & 0xFF))
@@ -803,11 +794,7 @@ namespace SecuCodeApp
                     this.shouldClearTagSeen = false;
                 }
 
-                var tags = message.TagReportData
-                    .Where(data => data.EPCParameter.Count > 0)
-                    .Select(data => DataHelpers.GetEpc(data.EPCParameter[0]))
-                    .Where(data => data.Length >= 12);
-
+                var tags = DataHelpers.ExtractValidEpcValues(message);
                 foreach (var tag in tags)
                 {
                     if (tag[10] == (this.tagId >> 8) && tag[11] == (this.tagId & 0xFF))

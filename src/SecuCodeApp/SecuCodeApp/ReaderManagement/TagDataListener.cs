@@ -104,17 +104,14 @@ namespace SecuCodeApp
 
             foreach (var tagReportData in message.TagReportData)
             {
-                if (tagReportData.EPCParameter.Count != 0)
+                var epc = DataHelpers.GetEpc(tagReportData.EPCParameter);
+                if (epc != null && epc.Length >= 12)
                 {
-                    var epc = Utils.GetEpcBytes(tagReportData.EPCParameter[0]);
-                    if (epc != null && epc.Length >= 12)
+                    this.action(new TagEvent
                     {
-                        this.action(new TagEvent
-                        {
-                            Epc = epc,
-                            PeakRSSI = tagReportData.PeakRSSI.PeakRSSI,
-                        });
-                    }
+                        Epc = epc,
+                        PeakRSSI = tagReportData.PeakRSSI.PeakRSSI,
+                    });
                 }
             }
         }

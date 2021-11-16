@@ -370,17 +370,17 @@ namespace SecuCodeApp
 
         private void AddTagData(PARAM_TagReportData tagReportData)
         {
-            var epcBytes = Utils.GetEpcBytes(tagReportData.EPCParameter[0]);
+            var epcBytes = DataHelpers.GetEpc(tagReportData.EPCParameter);
             if (epcBytes == null || epcBytes.Length < 12)
             {
                 return;
             }
 
-            var epc = Utils.GetEpcString(tagReportData.EPCParameter[0]);
+            var epcString = DataHelpers.GetEpcString(tagReportData.EPCParameter[0]);
             try
             {
-                var maskedEpc = Utils.MaskEpc(epc);
-                var tagId = epc.Substring(2 * 10);
+                var maskedEpc = DataHelpers.MaskEpc(epcString);
+                var tagId = epcString.Substring(2 * 10);
 
                 this.listBox.Dispatcher.Invoke(() =>
                 {
@@ -417,16 +417,16 @@ namespace SecuCodeApp
                     if (!this.epcLookupTable.ContainsKey(maskedEpc))
                     {
                         this.epcLookupTable.Add(maskedEpc, this.MacAddressCounts.Count);
-                        this.MacAddressCounts.Add(new EpcEntry { Epc = epc, Count = 0 });
+                        this.MacAddressCounts.Add(new EpcEntry { Epc = epcString, Count = 0 });
                     }
 
                     this.MacAddressCounts[this.epcLookupTable[maskedEpc]].Count += 1;
-                    this.MacAddressCounts[this.epcLookupTable[maskedEpc]].Epc = epc;
+                    this.MacAddressCounts[this.epcLookupTable[maskedEpc]].Epc = epcString;
                 });
 
                 this.mostRecentEpcTextBox.Dispatcher.Invoke(() =>
                 {
-                    this.mostRecentEpcTextBox.Text = epc;
+                    this.mostRecentEpcTextBox.Text = epcString;
                 });
             }
             catch { }

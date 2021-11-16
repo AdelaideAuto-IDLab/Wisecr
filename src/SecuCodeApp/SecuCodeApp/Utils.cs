@@ -34,34 +34,6 @@ namespace SecuCodeApp
             return minIdx;
         }
 
-        /// Helper function for masking all bytes of an EPC that we expect to be changing
-        public static string MaskEpc(string baseEpc)
-        {
-            return baseEpc.Substring(0, 2) + ".................." + baseEpc.Substring(2 * 10);
-        }
-
-        /// Converts an LLRP EPC choice parameter to a hex string
-        public static string GetEpcString(IParameter epcField)
-        {
-            return epcField switch
-            {
-                PARAM_EPC_96 epc => epc.EPC.ToHexString(),
-                PARAM_EPCData epc => epc.EPC.ToHexString(),
-                _ => "Unknown",
-            };
-        }
-
-        /// Converts an LLRP EPC choice parameter to a byte array
-        public static byte[] GetEpcBytes(IParameter epcField)
-        {
-            return epcField switch
-            {
-                PARAM_EPC_96 epc => epc.EPC.ToBytes(),
-                PARAM_EPCData epc => epc.EPC.ToBytes(),
-                _ => null,
-            };
-        }
-
         /// Calculates the number of additional bytes required to align `length` bytes to an alignment of `alignment` bytes
         public static int CalculatePadding(int length, int alignment)
         {
