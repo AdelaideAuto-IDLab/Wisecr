@@ -5,11 +5,11 @@
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)">169.254.18.116</Value>
     </Setting>
-    <Setting Name="TagList" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tag_list.toml</Value>
-    </Setting>
     <Setting Name="MaxAttempts" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Config" Type="System.String" Scope="User">
+      <Value Profile="(Default)">config.toml</Value>
     </Setting>
   </Settings>
 </SettingsFile>

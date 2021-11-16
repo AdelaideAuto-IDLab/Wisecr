@@ -6,6 +6,32 @@ using System.Threading.Tasks;
 
 namespace SecuCodeApp
 {
+    public class Config
+    {
+        public PamSetting[] PAMTable { get; set; }
+        public Dictionary<string, Tag> Tag { get; set; }
+    }
+
+    public class PamSetting
+    {
+        /// <summary>
+        /// VtUpper is the upper bound of applicable voltage of this setting.
+        /// </summary>
+        public int VtUpper { get; set; }
+
+        /// <summary>
+        /// The time the tag should spend in the active state for this setting.
+        /// </summary>
+        public int ActiveTime { get; set; }
+
+        /// <summary>
+        /// The time the tag should spend sleeping between active states.
+        /// </summary>
+        public int SleepTime { get; set; }
+    }
+
+
+
     public class Tag
     {
         public UInt16 TagId { get; set; }

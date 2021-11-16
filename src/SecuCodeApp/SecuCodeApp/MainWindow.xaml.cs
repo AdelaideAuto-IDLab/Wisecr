@@ -41,6 +41,8 @@ namespace SecuCodeApp
         private Dictionary<string, Tag> tagConfig = new Dictionary<string, Tag>();
         private Tag selectedTag;
 
+        private PamSetting[] pamTable = null;
+
         // Set an initial session key value to make things easier to test with
         private byte[] sessionKey = new byte[16] {
             0x83,0xEE,0x36,0x63,
@@ -69,7 +71,7 @@ namespace SecuCodeApp
             this.DataContext = this;
             this.InitializeComponent();
 
-            this.LoadTagList();
+            this.LoadConfig();
             var i = 0;
             foreach (var entry in this.tagConfig)
             {
@@ -86,12 +88,16 @@ namespace SecuCodeApp
             this.maxAttemptsTextBox.Text = this.MaxAttempts.ToString();
         }
 
-        private void LoadTagList()
+        private void LoadConfig()
         {
             try
             {
-                var config = File.ReadAllText(Properties.Settings.Default.TagList);
-                this.tagConfig = Toml.ReadString<Dictionary<string, Tag>>(config);
+                var config = Toml.ReadFile<Config>(Properties.Settings.Default.Config);
+
+                // Ensure that the PAM table is sorted to make lookup easier later.
+                this.pamTable = config.PAMTable.OrderBy(s => s.VtUpper).ToArray();
+
+                this.tagConfig = config.Tag ?? new Dictionary<string, Tag>();
             }
             catch (Exception ex)
             {
@@ -222,18 +228,23 @@ namespace SecuCodeApp
             var signature = SecuCode.GenerateSignature(this.sessionKey, this.bytesToSend, tag.Version, newVersion);
 
             byte sleepTime = 0, activeTime = 0;
-            this.Dispatcher.Invoke(() =>
+            var manual = this.GetManualPamParameters();
+            if (manual.HasValue)
             {
-                if (string.IsNullOrWhiteSpace(this.sleepTime.Text) | string.IsNullOrWhiteSpace(this.activeTime.Text))
+                (sleepTime, activeTime) = manual.Value;
+            }
+            else
+            {
+                if (this.pamTable == null)
                 {
-                    (sleepTime, activeTime) = Native.PAM.ComputePAM((ushort)tag.Voltage);
+                    (sleepTime, activeTime) = (0, 0);
                 }
                 else
                 {
-                    sleepTime = byte.Parse(this.sleepTime.Text);
-                    activeTime = byte.Parse(this.activeTime.Text);
+                    var e = this.pamTable.First(entry => tag.Voltage <= entry.VtUpper);
+                    (sleepTime, activeTime) = e != null ? ((byte)e.SleepTime, (byte)e.ActiveTime) : ((byte)0, (byte)0);
                 }
-            });
+            }
             var observerFlag = isObserver ? (byte)0x01 : (byte)0x00;
 
             return Native.TinyCrypt.AesEncrypt_DefaultIV(tag.DeviceKey, this.sessionKey)
@@ -242,6 +253,19 @@ namespace SecuCodeApp
                 .ToArray();
         }
 
+        private (byte, byte)? GetManualPamParameters()
+        {
+            (byte, byte)? pamParams = null;
+            this.Dispatcher.Invoke(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(this.sleepTime.Text) && !string.IsNullOrWhiteSpace(this.activeTime.Text))
+                {
+                    pamParams = (byte.Parse(this.sleepTime.Text), byte.Parse(this.activeTime.Text));
+                }
+            });
+
+            return pamParams;
+        }
 
 
         public void Connect()
@@ -287,7 +311,7 @@ namespace SecuCodeApp
 
                 this.ReaderMode.Clear();
                 var modeTable = capabilities.RegulatoryCapabilities.UHFBandCapabilities.AirProtocolUHFRFModeTable;
-                
+
                 for (var i = 0; i < modeTable.Count; ++i)
                 {
                     foreach (var entry in ((PARAM_C1G2UHFRFModeTable)modeTable[i]).C1G2UHFRFModeTableEntry)
@@ -360,7 +384,7 @@ namespace SecuCodeApp
 
                 this.listBox.Dispatcher.Invoke(() =>
                 {
-                 
+
                     if (this.activeTags.ContainsKey(tagId))
                     {
                         var voltage = (epcBytes[6] << 8) | epcBytes[7];
@@ -694,6 +718,14 @@ namespace SecuCodeApp
                 throw new Exception("Both 'SendMode' and 'AttestMode' cannot be None");
             }
 
+            byte? activeTime = null;
+            byte? sleepTime = null;
+            var manualPam = this.GetManualPamParameters();
+            if (manualPam.HasValue)
+            {
+                (activeTime, sleepTime) = manualPam.Value;
+            }
+
             return new UpdateConfig
             {
                 TargetTags = validTags.ToDictionary(t => t.TagId),
@@ -706,6 +738,9 @@ namespace SecuCodeApp
                 PilotSelectionStrategy = pilotStrategy,
                 SendMode = sendMode,
                 AttestMode = attestMode,
+                ActiveTime = activeTime,
+                SleepTime = sleepTime,
+                PAMTable = this.pamTable,
             };
         }
 
@@ -917,7 +952,8 @@ namespace SecuCodeApp
 
         public string Mode
         {
-            get {
+            get
+            {
                 var i = this.value.ModeIdentifier;
                 if (NAME_MAPPING.TryGetValue(i, out var name))
                 {

@@ -529,10 +529,16 @@ namespace SecuCodeApp
             var payload = MspBoot.EncodeProgram(this.config.Firmware);
             var signature = GenerateSignature(this.config.SessionKey, payload, tag.Version, this.config.TargetVersion);
             var observerFlag = isObserver ? (byte)0x01 : (byte)0x00;
+            var (activeTime, sleepTime) = this.config.GetPamParams(tag.Voltage);
+
+            var logMsg = $"[Tag.{tag.TagId:X04}] activeTime={activeTime}, sleepTime={sleepTime} for Vt={tag.Voltage}";
+            this.progress.Info(logMsg);
+            Console.WriteLine(logMsg);
+
 
             return Native.TinyCrypt.AesEncrypt_DefaultIV(tag.DeviceKey, this.config.SessionKey)
                 .Concat(signature)
-                .Concat(new byte[] { this.config.TargetVersion, 0, 0, observerFlag })
+                .Concat(new byte[] { this.config.TargetVersion, activeTime, sleepTime, observerFlag })
                 .ToArray();
         }
 
@@ -622,6 +628,35 @@ namespace SecuCodeApp
 
         /// Controls the strategy use for selecting the tag we broadcast to 
         public PilotTagSelection PilotSelectionStrategy = PilotTagSelection.First;
+
+        /// A manually configured time to remain in the active state for in the update session.
+        /// 
+        /// If null, this is read from the PAM table based on the last seen tag voltage.
+        public byte? ActiveTime = null;
+
+        /// A manually configured time to sleep for between active states.
+        /// 
+        /// If null, this is read from the PAM table based on the last seen tag voltage.
+        public byte? SleepTime = null;
+
+        /// The PAM lookup table configured for this update.
+        public PamSetting[] PAMTable = null;
+
+        public (byte, byte) GetPamParams(int tagVoltage)
+        {
+            if (this.ActiveTime is byte active && this.SleepTime is byte sleep)
+            {
+                return (active, sleep);
+            }
+
+            if (this.PAMTable is null)
+            {
+                return (0, 0);
+            }
+
+            var e = this.PAMTable.First(entry => tagVoltage <= entry.VtUpper);
+            return e != null ? ((byte)e.SleepTime, (byte)e.ActiveTime) : ((byte)0, (byte)0);
+        }
     }
 
     public struct RunResults
