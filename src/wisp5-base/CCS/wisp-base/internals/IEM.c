@@ -23,7 +23,6 @@ __interrupt void TIMER3_A0_ISR(void){
         TA3CTL = TASSEL__ACLK | MC__UP;
         IEMctx.currentState = SLEEP_S;
         //==================================================================
-        P3OUT &= ~BIT5;
         __bis_SR_register_on_exit(LPM3_bits | GIE); //enter sleep mode on exit of interrupt routine.
     }else{//sleep currently
         // Use Timer 3A for a short period for code execution===============
@@ -33,7 +32,6 @@ __interrupt void TIMER3_A0_ISR(void){
         TA3CTL = TASSEL__ACLK | MC__UP;
         IEMctx.currentState = ACTIVE_S;
         //==================================================================
-        P3OUT |= BIT5;
         __bic_SR_register_on_exit(LPM3_bits);
         __bis_SR_register_on_exit(GIE); //enter global interrupt on exit of interrupt routine.
     }
@@ -44,7 +42,6 @@ __interrupt void TIMER0_B0_ISR(void){
     TB0CTL &= ~(MC__UP);                    // Stop Timer
     TB0CCTL0 &= !CCIE; ; // disable Timer0B7 timer
 //    P1OUT &= ~BIT4;
-    P3OUT |= BIT5;
     __no_operation();                         // For debugger
     __bic_SR_register_on_exit(LPM3_bits);
 }
@@ -114,7 +111,6 @@ inline void EnterPAM(uint8_t sleepT, uint8_t activeT){
         TA3CCR0 = IEMctx.sleeptime - 270;
         TA3CTL = TASSEL__ACLK | MC__UP;
         //==================================================================
-        P3OUT &= ~BIT5;
         __bis_SR_register(LPM3_bits |GIE); //enter global interrupt on exit of interrupt routine, and enter LPM3
     }else{
         IEMctx.currentState = ACTIVE_S; //initial 30 ms is already larger than the sleep time
@@ -123,7 +119,6 @@ inline void EnterPAM(uint8_t sleepT, uint8_t activeT){
         TA3CCTL0 = CCIE;                        // TACCR0 interrupt enabled
         TA3CCR0 = IEMctx.activetime;
         TA3CTL = TASSEL__ACLK | MC__UP;
-        P3OUT |= BIT5;
         __bis_SR_register(GIE); //enter global interrupt on exit of interrupt routine, and remain active
     }
 

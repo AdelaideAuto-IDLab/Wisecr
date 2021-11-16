@@ -255,7 +255,7 @@ void blockWriteControlMessage(void) {
         break;
 
     case GET_ATTESTATION_RESPONSE:
-
+        P3OUT |= BIT5;
         AES_init_ctx_iv(&ctx,_Device_Key,IV); // Initialization, put the key and the Initial Vector
         AES256_setDecipherKey(AES256_BASE, _Device_Key, AES256_KEYLENGTH_128BIT);
         AES_CBC_decrypt(&ctx, ATT_XKEY, SesKey); // decrypt and store the session key
@@ -267,6 +267,7 @@ void blockWriteControlMessage(void) {
         firm_len = (((unsigned short)(*ATT_LENGTH) >> 8) | ((unsigned short)(*ATT_LENGTH) << 8));
         firm_addr = (((unsigned short)(*ATT_OFFSET) >> 8) | ((unsigned short)(*ATT_OFFSET) << 8));
         doTINA(usrBank, SesKey, ATT_CHALLENGE, (uint8_t*)firm_addr, firm_len, id, &veri, attMode);
+        P3OUT &= ~BIT5;
         __no_operation();
         break;
 
