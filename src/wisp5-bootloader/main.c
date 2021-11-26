@@ -69,7 +69,7 @@ static void MPU_init_bootloader(void);
 static void MPU_init_app(void);
 
 extern void CopyWispISRs(void);
-extern inline void TTIEM(void);
+inline void TTIEM(uint16_t time);
 
 
 
@@ -120,12 +120,9 @@ int main(void)
 
     //Test Touch [4551]
     P1OUT |= BIT4;
-    TTIEM();
+    TTIEM(30);
     P1OUT &= ~BIT4;
     rawV = ADC_read();
-    P1OUT |= BIT4;
-    TTIEM();
-    P1OUT &= ~BIT4;
 
     miliVolt_start = 2*ADC_rawToVoltage(rawV); // times 2 because there is a half voltage divider
 
@@ -190,6 +187,8 @@ static void HW_init(void)
     P1OUT |= BIT1;
     P1REN |= BIT1;
     PM5CTL0 &= ~LOCKLPM5;       // Lock LPM5.
+    P3DIR |= BIT5; // indicate attestation timing
+    P3OUT &= ~BIT5;
 
     // Copy out the version number from secure storage
     nver = *((volatile uint8_t *)&_Device_Version);
