@@ -153,10 +153,8 @@ namespace SecuCodeApp
                         // This tag was not found during our scan, so it is now marked as missing
                         missingTags.Add(tag);
                         this.progress.Error("Missing", tag);
-                        continue;
                     }
-
-                    if (value.Version == this.config.TargetVersion)
+                    else if (value.Version == this.config.TargetVersion)
                     {
                         // This tag is now done
                         doneTags.Add(tag);
@@ -375,30 +373,35 @@ namespace SecuCodeApp
                 {
                     if (tag == pilotTag)
                     {
-                        this.progress.Info("Pilot tag failure");
+                        this.progress.Info("Failed to restart Pilot tag in bootloader");
                         return;
                     }
                     failedTags.Add(tag);
                 }
             }
-            tagList.RemoveAll(t => failedTags.Contains(t));
             this.progress.Info($"Restarted tags in bootloader mode ({failedTags.Count} failed)");
 
             // Send session key to each tag in the bootloader
             this.progress.Info($"Sending session key to: {TagString(tagList)}\n");
             foreach (var tag in tagList)
             {
+                if (failedTags.Contains(tag))
+                {
+                    // No point in attempting to send the session key to a tag that is not in the 
+                    // bootloader state.
+                    continue;
+                }
+
                 if (!await this.SendSessionKey(tag, tag != pilotTag))
                 {
                     if (tag == pilotTag)
                     {
-                        this.progress.Info("Pilot tag failure");
+                        this.progress.Info("Failed to send session key to Pilot tag");
                         return;
                     }
                     failedTags.Add(tag);
                 }
             }
-            tagList.RemoveAll(t => failedTags.Contains(t));
             this.progress.Info($"Sent session key to tags ({failedTags.Count} failed)");
 
             // Sends payload to pilot tag (observer tags should sniff results)

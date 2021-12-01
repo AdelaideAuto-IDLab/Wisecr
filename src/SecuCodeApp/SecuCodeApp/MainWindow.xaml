@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="ProverTool (v140)" Width="1122" Height="669.9" Closing="Window_Closing">
+        Title="ProverTool (v141)" Width="1122" Height="669.9" Closing="Window_Closing">
     <Grid>
         <Grid Height="50" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
