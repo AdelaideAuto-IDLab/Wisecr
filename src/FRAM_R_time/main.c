@@ -15,11 +15,26 @@
 #include "TI_MSPBoot_AppMgr.h"
 #include "wisp-base.h"
 #include <stdbool.h>
+#include <string.h>
 
 
 #define WRITE_SIZE 512
 
 static uint16_t* BASE_ADDRESS = (uint16_t*)0x10000;
+
+#define BUFF_SIZE 16
+
+// buffers in SRAM
+uint16_t SRAM_Buff1[BUFF_SIZE];
+uint16_t SRAM_Buff2[BUFF_SIZE];
+
+// buffers in FRAM
+#pragma PERSISTENT(FRAM_Buff1)
+#pragma location = 0x10000
+uint16_t FRAM_Buff1[BUFF_SIZE] = {0};
+#pragma PERSISTENT(FRAM_Buff2)
+#pragma location = 0x10020
+uint16_t FRAM_Buff2[BUFF_SIZE] = {0};
 
 uint16_t rawV;
 uint16_t miliVolt_start;
@@ -87,12 +102,33 @@ int main(void)
 
     //Clear GPIO pin
     P1OUT &= ~BIT4;
+//    uint16_t SRAM_data[256];
+//    memset((void*)SRAM_data,0xFF,256);
 
-    static const uint16_t full = 0xFFFF;
     // Pull up GPIO pin
+//    // Configure DMA channel 0
+//      __data20_write_long((uintptr_t) &DMA0SA,(uintptr_t) SRAM_Buff1);
+//                                                // Source block address
+//      __data20_write_long((uintptr_t) &DMA0DA,(uintptr_t) FRAM_Buff1);
+//                                                // Destination single address
+//      DMA0SZ = 16;                              // Block size
+//      DMA0CTL = DMADT_5 | DMASRCINCR_3 | DMADSTINCR_3; // Rpt, inc
+//      DMA0CTL |= DMAEN;                         // Enable DMA0
     P1OUT |= BIT4;
+    uint16_t i,j;
+    register uint8_t register_buffer;
     while(1){ // continuously copy zero and full to the same address of the FRAM
-        *BASE_ADDRESS = full;
+//        memset((void*)BASE_ADDRESS,0xFF,255);
+//        memset((void*)BASE_ADDRESS,0x00,255);
+//        DMA0CTL |= DMAREQ;                      // Trigger block transfer
+        for(i=0; i<1000; i++){
+            for (j=0;j<BUFF_SIZE;j++){
+                FRAM_Buff1[j]=SRAM_Buff1[j];
+            }
+            for (j=0;j<BUFF_SIZE;j++){
+                FRAM_Buff2[j]=SRAM_Buff2[j];
+            }
+        }
     }
 }
 
