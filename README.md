@@ -66,7 +66,20 @@ The source code for a number of example firmware that can be transmitted is avai
 
 ## Reference
 
-*TODO*
+This repository is provided as part of the following paper:
+
+Y. Su, M. Chesser, Y. Gao, A. Sample. and D. Ranasinghe, "Wisecr: Secure simultaneous code dissemination to many batteryless computational RFID devices", in _IEEE Transactions on Dependable and Secure Computing_.
+
+Cite using:
+
+```
+@article{su2022wisecr,
+  title={Wisecr: Secure simultaneous code dissemination to many batteryless computational RFID devices},
+  author={Su, Yang and Chesser, Michael and Gao, Yansong and Sample, Alanson and Ranasinghe, Damith},
+  journal={IEEE Transactions on Dependable and Secure Computing},
+  year={2022}
+}
+```
 
 ## License
 
